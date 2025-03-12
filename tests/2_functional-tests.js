@@ -140,7 +140,7 @@ suite('Functional Tests', function() {
       .send({ status_text: 'In Progress' })
       .end((_err, res) => {
         assert.equal(res.type, 'application/json');
-        assert.equal(res.body, { error: 'missing _id' });
+        assert.deepEqual(res.body, { error: 'missing _id' });
         done();
       });
   });
@@ -153,7 +153,7 @@ suite('Functional Tests', function() {
       .send({ _id })
       .end((_err, res) => {
         assert.equal(res.type, 'application/json');
-        assert.equal(res.body, { error: 'no update field(s) sent', '_id': _id });
+        assert.deepEqual(res.body, { error: 'no update field(s) sent', '_id': _id });
         done();
       });
   });
@@ -166,21 +166,45 @@ suite('Functional Tests', function() {
       .send({ _id, status_text: 'In Progress' })
       .end((_err, res) => {
         assert.equal(res.type, 'application/json');
-        assert.equal(res.body, { error: 'could not update', '_id': _id });
+        assert.deepEqual(res.body, { error: 'could not update', '_id': _id });
         done();
       });
   });
 
-  test('DELETE should delete the specified project', (done) => {
+  test('DELETE should delete the specified issue', (done) => {
+    const _id = 2;
 
+    chai.request(server)
+      .delete('/api/issues/test')
+      .send({ _id })
+      .end((_err, res) => {
+        assert.equal(res.status, 200);
+        assert.equal(res.type, 'application/json');
+        assert.deepEqual(res.body, { result: 'successfully deleted', '_id': _id })
+      });
   });
 
   test('DELETE should return an error on an invalid _id', (done) => {
+    const _id = '%&!#+sjdfklj';
 
+    chai.request(server)
+      .put('/api/issues/test')
+      .send({ _id })
+      .end((_err, res) => {
+        assert.equal(res.type, 'application/json');
+        assert.deepEqual(res.body, { error: 'could not update', '_id': _id });
+        done();
+      });
   });
 
   test('DELETE should return an error on missing _id', (done) => {
-
+    chai.request(server)
+      .put('/api/issues/test')
+      .end((_err, res) => {
+        assert.equal(res.type, 'application/json');
+        assert.deepEqual(res.body, { error: 'missing _id' });
+        done();
+      });
   });
 
 });
