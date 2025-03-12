@@ -107,23 +107,68 @@ suite('Functional Tests', function() {
   });
 
   test('PUT should update one specified field', (done) => {
+    const _id = 1;
 
+    chai.request(server)
+      .put('/api/issues/test')
+      .send({ _id, open: false })
+      .end((_err, res) => {
+        assert.equal(res.status, 200);
+        assert.equal(res.type, 'application/json');
+        assert.deepEqual(res.body, { result: 'successfully updated', '_id': _id })
+        done();
+      });
   });
 
   test('PUT should update all specified fields', (done) => {
+    const _id = 2;
 
+    chai.request(server)
+      .put('/api/issues/test')
+      .send({ _id, open: false, assigned_to: 'TestUser2' })
+      .end((_err, res) => {
+        assert.equal(res.status, 200);
+        assert.equal(res.type, 'application/json');
+        assert.deepEqual(res.body, { result: 'successfully updated', '_id': _id })
+        done();
+      });
   });
 
   test('PUT should return an error on missing _id', (done) => {
-
+    chai.request(server)
+      .put('/api/issues/test')
+      .send({ status_text: 'In Progress' })
+      .end((_err, res) => {
+        assert.equal(res.type, 'application/json');
+        assert.equal(res.body, { error: 'missing _id' });
+        done();
+      });
   });
 
   test('PUT should return an error if no fields are specified', (done) => {
+    const _id = 1;
 
+    chai.request(server)
+      .put('/api/issues/test')
+      .send({ _id })
+      .end((_err, res) => {
+        assert.equal(res.type, 'application/json');
+        assert.equal(res.body, { error: 'no update field(s) sent', '_id': _id });
+        done();
+      });
   });
 
   test('PUT should return an error on an invalid _id', (done) => {
+    const _id = '%&!#+sjdfklj';
 
+    chai.request(server)
+      .put('/api/issues/test')
+      .send({ _id, status_text: 'In Progress' })
+      .end((_err, res) => {
+        assert.equal(res.type, 'application/json');
+        assert.equal(res.body, { error: 'could not update', '_id': _id });
+        done();
+      });
   });
 
   test('DELETE should delete the specified project', (done) => {
