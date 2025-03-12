@@ -8,41 +8,47 @@ chai.use(chaiHttp);
 // Testing /api/issues/{project}
 suite('Functional Tests', function() {
 
+  const testFull = {
+    issue_title: 'testEvery',
+    issue_text: 'Test of filling every field',
+    created_by: 'TestUser',
+    assigned_to: 'TestUser',
+    status_test: 'New'
+  }
+
+  const testRequired = {
+    issue_title: 'testRequired',
+    issue_text: 'Test for required fields',
+    created_by: 'TestUser'
+  }
+
+  function arrayIncludesObj(array, obj) {
+    return array.some((item) => assert.deepEqual(item, obj));
+  }
+
   test('POST should create the correct issue if every field is set', (done) => {
-    const testIssue = {
-      issue_title: 'testEvery',
-      issue_text: 'Test of filling every field',
-      created_by: 'TestUser',
-      assigned_to: 'TestUser',
-      status_test: 'New'
-    }
 
     chai.request(server)
       .post('/api/issues/test')
-      .send(testIssue)
+      .send(testFull)
       .end((_err, res) => {
         assert.equal(res.status, 200);
         assert.equal(res.type, 'application/json');
-        assert.deepInclude(res.body, testIssue);
+        assert.deepInclude(res.body, testFull);
         done();
       });
 
   });
 
   test('POST should create the correct issue if only required fields are set', (done) => {
-    const testIssue = {
-      issue_title: 'testRequired',
-      issue_text: 'Test for required fields',
-      created_by: 'TestUser'
-    }
 
     chai.request(server)
       .post('/api/issues/test')
-      .send(testIssue)
+      .send(testRequired)
       .end((_err, res) => {
         assert.equal(res.status, 200);
         assert.equal(res.type, 'application/json');
-        assert.deepInclude(res.body, testIssue);
+        assert.deepInclude(res.body, testRequired);
         done();
       });
   });
@@ -65,14 +71,38 @@ suite('Functional Tests', function() {
   });
 
   test('GET should return all issues of a project', (done) => {
-
+    chai.request(server)
+      .get('/api/issues/test')
+      .end((_err, res) => {
+        assert.equal(res.status, 200);
+        assert.equal(res.type, 'application/json');
+        assert.isTrue(arrayIncludesObj(res.body, testFull));
+        assert.isTrue(arrayIncludesObj(res.body, testRequired))
+        done();
+      });
   });
 
   test('GET should return all issues that fulfill one filter criteria', (done) => {
+    chai.request(server)
+      .get("/api/issues/test?assigned_to='TestUser'")
+      .end((_err, res) => {
+        assert.equal(res.status, 200);
+        assert.equal(res.type, 'application/json');
+        assert.isTrue(arrayIncludesObj(res.body, testFull));
+        done();
+      });
 
   });
 
   test('GET should return all issues that fulfill all filter criteria', (done) => {
+    chai.request(server)
+      .get("/api/issues/test?created_by='TestUser'&issue_title='testRequired'")
+      .end((_err, res) => {
+        assert.equal(res.status, 200);
+        assert.equal(res.type, 'application/json');
+        assert.isTrue(arrayIncludesObj(res.body, testRequired));
+        done();
+      });
 
   });
 
