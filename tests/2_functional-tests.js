@@ -9,15 +9,59 @@ chai.use(chaiHttp);
 suite('Functional Tests', function() {
 
   test('POST should create the correct issue if every field is set', (done) => {
+    const testIssue = {
+      issue_title: 'testEvery',
+      issue_text: 'Test of filling every field',
+      created_by: 'TestUser',
+      assigned_to: 'TestUser',
+      status_test: 'New'
+    }
+
+    chai.request(server)
+      .post('/api/issues/test')
+      .send(testIssue)
+      .end((_err, res) => {
+        assert.equal(res.status, 200);
+        assert.equal(res.type, 'application/json');
+        assert.deepInclude(res.body, testIssue);
+        done();
+      });
 
   });
 
   test('POST should create the correct issue if only required fields are set', (done) => {
+    const testIssue = {
+      issue_title: 'testRequired',
+      issue_text: 'Test for required fields',
+      created_by: 'TestUser'
+    }
 
+    chai.request(server)
+      .post('/api/issues/test')
+      .send(testIssue)
+      .end((_err, res) => {
+        assert.equal(res.status, 200);
+        assert.equal(res.type, 'application/json');
+        assert.deepInclude(res.body, testIssue);
+        done();
+      });
   });
 
   test('POST should return an error if missing required fields', (done) => {
+    const testIssue = {
+      issue_title: 'Test for required error',
+      created_by: 'TestUser',
+      status_text: 'New'
+    }
 
+    chai.request(server)
+      .post('/api/issues/test')
+      .send(testIssue)
+      .end((_err, res) => {
+        assert.equal(res.type, 'application/json');
+        assert.deepEqual(res.body, { error: 'required field(s) missing' });
+        done();
+      });
   });
 
   test('GET should return all issues of a project', (done) => {
