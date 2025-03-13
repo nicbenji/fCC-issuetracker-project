@@ -2,6 +2,7 @@ const { ProjectModel, IssueModel } = require('../models/issue.js');
 
 async function findOrInsertProject(projectName) {
   try {
+    // TODO: Sanitize input to prevent NoSQL injection
     let project = await ProjectModel.findOne({ name: projectName });
 
     if (!project) {
@@ -10,7 +11,7 @@ async function findOrInsertProject(projectName) {
       });
       project = await newProject.save();
     }
-    return project.id;
+    return project._id;
   } catch (error) {
     // TODO: More secure error handling -> use Mongoose errors
     console.error(error);
@@ -54,7 +55,7 @@ async function createIssue(project, issue) {
   }
 }
 
-async function updateIssueById(project, id, updateOptions) {
+async function updateIssueById(id, updateOptions) {
 
   // TODO: Validate id and update shite
 
@@ -67,7 +68,7 @@ async function updateIssueById(project, id, updateOptions) {
   }
 }
 
-async function deleteIssueById(project, id) {
+async function deleteIssueById(id) {
 
   // TODO: Validate id
 

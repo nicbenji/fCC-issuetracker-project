@@ -32,7 +32,6 @@ module.exports = function(app) {
     })
 
     .put(async function(req, res) {
-      const project = req.params.project;
       const updateFields = req.body;
       const id = updateFields._id;
 
@@ -41,7 +40,7 @@ module.exports = function(app) {
       }
 
       try {
-        await updateIssueById(project, id, updateFields);
+        await updateIssueById(id, updateFields);
         return res.json({ result: 'successfully updated', '_id': id })
       } catch (error) {
         // TODO: Error handling
@@ -50,7 +49,6 @@ module.exports = function(app) {
     })
 
     .delete(async function(req, res) {
-      const project = req.params.project;
       const id = req.body._id;
 
       if (!id) {
@@ -58,7 +56,7 @@ module.exports = function(app) {
       }
 
       try {
-        await deleteIssueById(project, id);
+        await deleteIssueById(id);
         return res.json({ result: 'successfully deleted', '_id': id })
       } catch (error) {
         // TODO: Error handling
