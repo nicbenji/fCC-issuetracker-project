@@ -27,6 +27,7 @@ async function getAllIssues(project, filterOptions) {
   // TODO: Process/validate filter options
 
   try {
+    // TODO: Sanitize input to prevent NoSQL injection
     const issues = await IssueModel.find({ project: projectId, ...filterOptions });
     // TODO: Only return necessary fields
     return issues;
