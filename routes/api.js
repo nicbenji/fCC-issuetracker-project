@@ -11,7 +11,7 @@ module.exports = function(app) {
       const filters = req.query;
 
       try {
-        const issues = await getAllIssues(filters);
+        const issues = await getAllIssues(project, filters);
         return res.json(issues);
       } catch (error) {
         // TODO: Error handling
@@ -24,7 +24,7 @@ module.exports = function(app) {
       const issue = req.body;
 
       try {
-        const savedIssue = createIssue(issue);
+        const savedIssue = createIssue(project, issue);
         return res.json(savedIssue);
       } catch (error) {
         // TODO: Error handling
@@ -41,7 +41,7 @@ module.exports = function(app) {
       }
 
       try {
-        await updateIssueById(id, updateFields);
+        await updateIssueById(project, id, updateFields);
         return res.json({ result: 'successfully updated', '_id': id })
       } catch (error) {
         // TODO: Error handling
@@ -58,7 +58,7 @@ module.exports = function(app) {
       }
 
       try {
-        await deleteIssueById(id);
+        await deleteIssueById(project, id);
         return res.json({ result: 'successfully deleted', '_id': id })
       } catch (error) {
         // TODO: Error handling

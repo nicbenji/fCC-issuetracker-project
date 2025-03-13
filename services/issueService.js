@@ -1,11 +1,32 @@
-const IssueModel = require('../models/issue.js');
+const { ProjectModel, IssueModel } = require('../models/issue.js');
 
-async function getAllIssues(filterOptions) {
+async function findOrInsertProject(projectName) {
+  try {
+    let project = await ProjectModel.findOne({ name: projectName });
+
+    if (!project) {
+      const newProject = new ProjectModel({
+        name: projectName
+      });
+      project = await newProject.save();
+    }
+    return project.id;
+  } catch (error) {
+    // TODO: More secure error handling -> use Mongoose errors
+    console.error(error);
+    throw new Error('Failed to find users');
+  }
+
+}
+
+async function getAllIssues(project, filterOptions) {
+
+  const projectId = findOrInsertProject(project);
 
   // TODO: Process/validate filter options
 
   try {
-    const issues = await IssueModel.find(filterOptions);
+    const issues = await IssueModel.find({ project: projectId, ...filterOptions });
     // TODO: Only return necessary fields
     return issues;
   } catch (error) {
@@ -15,12 +36,14 @@ async function getAllIssues(filterOptions) {
   }
 }
 
-async function createIssue(issue) {
+async function createIssue(project, issue) {
+
+  const projectId = findOrInsertProject(project);
 
   // TODO: Validate issue
 
   try {
-    const saveableIssue = new IssueModel(issue);
+    const saveableIssue = new IssueModel({ project: projectId, ...issue });
     const savedIssue = await saveableIssue.save();
     // TODO: Only return necessary fields
     return savedIssue;
@@ -31,7 +54,7 @@ async function createIssue(issue) {
   }
 }
 
-async function updateIssueById(id, updateOptions) {
+async function updateIssueById(project, id, updateOptions) {
 
   // TODO: Validate id and update shite
 
@@ -44,7 +67,7 @@ async function updateIssueById(id, updateOptions) {
   }
 }
 
-async function deleteIssueById(id) {
+async function deleteIssueById(project, id) {
 
   // TODO: Validate id
 
