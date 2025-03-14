@@ -1,6 +1,7 @@
 const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
+const ObjectId = require('mongoose').Types.ObjectId;
 const server = require('../server');
 
 chai.use(chaiHttp);
@@ -8,7 +9,11 @@ chai.use(chaiHttp);
 // Testing /api/issues/{project}
 suite('Functional Tests', function() {
 
+  const testIdFull = new ObjectId();
+  const testIdRequired = new ObjectId();
+
   const testFull = {
+    _id: testIdFull,
     issue_title: 'testEvery',
     issue_text: 'Test of filling every field',
     created_by: 'TestUser',
@@ -17,6 +22,7 @@ suite('Functional Tests', function() {
   }
 
   const testRequired = {
+    _id: testIdRequired,
     issue_title: 'testRequired',
     issue_text: 'Test for required fields',
     created_by: 'TestUser'
@@ -107,7 +113,7 @@ suite('Functional Tests', function() {
   });
 
   test('PUT should update one specified field', (done) => {
-    const _id = 1;
+    const _id = testIdFull;
 
     chai.request(server)
       .put('/api/issues/test')
@@ -121,7 +127,7 @@ suite('Functional Tests', function() {
   });
 
   test('PUT should update all specified fields', (done) => {
-    const _id = 2;
+    const _id = testIdRequired;
 
     chai.request(server)
       .put('/api/issues/test')
@@ -146,7 +152,7 @@ suite('Functional Tests', function() {
   });
 
   test('PUT should return an error if no fields are specified', (done) => {
-    const _id = 1;
+    const _id = testIdFull;
 
     chai.request(server)
       .put('/api/issues/test')
@@ -172,7 +178,7 @@ suite('Functional Tests', function() {
   });
 
   test('DELETE should delete the specified issue', (done) => {
-    const _id = 2;
+    const _id = testIdRequired;
 
     chai.request(server)
       .delete('/api/issues/test')
