@@ -2,7 +2,6 @@ const { ProjectModel, IssueModel } = require('../models/issue.js');
 
 async function findOrInsertProject(projectName) {
   try {
-    // TODO: Sanitize input to prevent NoSQL injection
     let project = await ProjectModel.findOne({ name: projectName });
 
     if (!project) {
@@ -27,7 +26,6 @@ async function getAllIssues(project, filterOptions) {
   // TODO: Process/validate filter options
 
   try {
-    // TODO: Sanitize input to prevent NoSQL injection
     const issues = await IssueModel.find({ project: projectId, ...filterOptions });
     // TODO: Only return necessary fields
     return issues;
