@@ -1,22 +1,41 @@
 const { ProjectModel, IssueModel } = require('../models/issue.js');
 
-async function findOrInsertProject(projectName) {
+async function findProject(projectName) {
   try {
     let project = await ProjectModel.findOne({ name: projectName });
 
-    if (!project) {
-      const newProject = new ProjectModel({
-        name: projectName
-      });
-      project = await newProject.save();
-    }
     return project._id;
   } catch (error) {
     // TODO: More secure error handling -> use Mongoose errors
     console.error(error);
-    throw new Error('Failed to find users');
+    throw new Error('Failed to find project');
   }
 
+}
+
+async function createProject(projectName) {
+
+  try {
+    const newProject = new ProjectModel({
+      name: projectName
+    });
+    project = await newProject.save();
+    return project._id;
+  } catch (error) {
+    // TODO: More secure error handling -> use Mongoose errors
+    console.error(error);
+    throw new Error('Failed to create project');
+  }
+}
+
+async function findOrInsertProject(projectName) {
+
+  const project = await findProject(projectName);
+
+  if (!project) {
+    return await createProject(projectName);
+  }
+  return project;
 }
 
 async function getAllIssues(project, filterOptions) {
@@ -32,7 +51,7 @@ async function getAllIssues(project, filterOptions) {
   } catch (error) {
     // TODO: More secure error handling -> use Mongoose errors
     console.error(error);
-    throw new Error('Failed to find users');
+    throw new Error('Failed to find issues');
   }
 }
 
@@ -50,7 +69,7 @@ async function createIssue(project, issue) {
   } catch (error) {
     // TODO: More secure error handling -> use Mongoose errors
     console.error(error);
-    throw new Error('Failed to find users');
+    throw new Error('Failed to create issue');
   }
 }
 
@@ -63,7 +82,7 @@ async function updateIssueById(id, updateOptions) {
   } catch (error) {
     // TODO: More secure error handling -> use Mongoose errors
     console.error(error);
-    throw new Error('Failed to find users');
+    throw new Error('Failed to update issue');
   }
 }
 
@@ -76,7 +95,7 @@ async function deleteIssueById(id) {
   } catch (error) {
     // TODO: More secure error handling -> use Mongoose errors
     console.error(error);
-    throw new Error('Failed to find users');
+    throw new Error('Failed to delete issue');
   }
 }
 
