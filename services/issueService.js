@@ -19,7 +19,7 @@ async function createProject(projectName) {
     const newProject = new ProjectModel({
       name: projectName
     });
-    project = await newProject.save();
+    const project = await newProject.save();
     return project._id;
   } catch (error) {
     // TODO: More secure error handling -> use Mongoose errors
@@ -30,17 +30,17 @@ async function createProject(projectName) {
 
 async function findOrInsertProject(projectName) {
 
-  const project = await findProject(projectName);
+  const projectId = await findProject(projectName);
 
-  if (!project) {
+  if (!projectId) {
     return await createProject(projectName);
   }
-  return project;
+  return projectId;
 }
 
 async function getAllIssues(project, filterOptions) {
 
-  const projectId = findOrInsertProject(project);
+  const projectId = await findOrInsertProject(project);
 
   // TODO: Process/validate filter options
 
@@ -57,7 +57,7 @@ async function getAllIssues(project, filterOptions) {
 
 async function createIssue(project, issue) {
 
-  const projectId = findOrInsertProject(project);
+  const projectId = await findOrInsertProject(project);
 
   // TODO: Validate issue
 
@@ -73,6 +73,7 @@ async function createIssue(project, issue) {
   }
 }
 
+// NOTE: Maybe checking if issue belongs to project necessary
 async function updateIssueById(id, updateOptions) {
 
   // TODO: Validate id and update shite
@@ -86,6 +87,7 @@ async function updateIssueById(id, updateOptions) {
   }
 }
 
+// NOTE: Maybe checking if issue belongs to project necessary
 async function deleteIssueById(id) {
 
   // TODO: Validate id

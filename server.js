@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const expect = require('chai').expect;
 const cors = require('cors');
+const database = require('./dbconnect.js');
 const mongoSanitize = require("express-mongo-sanitize");
 require('dotenv').config();
 
@@ -21,6 +22,7 @@ app.use(mongoSanitize());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 
 //Sample front-end
 app.route('/:project/')
@@ -48,8 +50,14 @@ app.use(function(req, res, next) {
 });
 
 //Start our server and tests!
-const listener = app.listen(process.env.PORT || 3000, function() {
+const listener = app.listen(process.env.PORT || 3000, async function() {
   console.log('Your app is listening on port ' + listener.address().port);
+  try {
+    console.log('Connecting database');
+    await database();
+  } catch (error) {
+    console.error(error);
+  }
   if (process.env.NODE_ENV === 'test') {
     console.log('Running Tests...');
     setTimeout(function() {

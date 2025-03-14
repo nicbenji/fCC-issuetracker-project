@@ -1,5 +1,4 @@
 'use strict';
-const mongoSanitize = require("express-mongo-sanitize");
 const { getAllIssues, createIssue, updateIssueById, deleteIssueById } = require('../services/issueService');
 
 module.exports = function(app) {
