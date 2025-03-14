@@ -33,7 +33,6 @@ suite('Functional Tests', function() {
   }
 
   test('POST should create the correct issue if every field is set', (done) => {
-
     chai.request(server)
       .post('/api/issues/test')
       .send(testFull)

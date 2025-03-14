@@ -2,9 +2,9 @@ const { ProjectModel, IssueModel } = require('../models/issue.js');
 
 async function findProject(projectName) {
   try {
-    let project = await ProjectModel.findOne({ name: projectName });
+    const project = await ProjectModel.findOne({ name: projectName });
 
-    return project._id;
+    return project?._id;
   } catch (error) {
     // TODO: More secure error handling -> use Mongoose errors
     console.error(error);
@@ -79,7 +79,7 @@ async function updateIssueById(id, updateOptions) {
   // TODO: Validate id and update shite
 
   try {
-    await IssueModel.findByIdAndUpdate(id, updateOptions);
+    await IssueModel.findByIdAndUpdate(id, updateOptions, { new: true });
   } catch (error) {
     // TODO: More secure error handling -> use Mongoose errors
     console.error(error);

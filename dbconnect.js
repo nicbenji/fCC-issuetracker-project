@@ -28,11 +28,4 @@ mongoose.connection.on('disconnected', () => {
   console.log('Database disconnected');
 });
 
-process.on('SIGINT', () => {
-  mongoose.connection.close(() => {
-    console.log('Database connection closed with application');
-    process.exit(0);
-  });
-});
-
 module.exports = connect;
