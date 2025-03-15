@@ -23,7 +23,7 @@ module.exports = function(app) {
       const issue = req.body;
 
       try {
-        const savedIssue = createIssue(project, issue);
+        const savedIssue = await createIssue(project, issue);
         return res.json(savedIssue);
       } catch (error) {
         // TODO: Error handling

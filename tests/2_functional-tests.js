@@ -9,8 +9,9 @@ chai.use(chaiHttp);
 // Testing /api/issues/{project}
 suite('Functional Tests', function() {
 
-  const testIdFull = new ObjectId();
-  const testIdRequired = new ObjectId();
+  const testIdFull = new ObjectId().toString();
+  const testIdRequired = new ObjectId().toString();
+  console.log(testIdFull, testIdRequired);
 
   const testFull = {
     _id: testIdFull,
@@ -18,7 +19,7 @@ suite('Functional Tests', function() {
     issue_text: 'Test of filling every field',
     created_by: 'TestUser',
     assigned_to: 'TestUser',
-    status_test: 'New'
+    status_text: 'New'
   }
 
   const testRequired = {
@@ -28,8 +29,9 @@ suite('Functional Tests', function() {
     created_by: 'TestUser'
   }
 
+  // Deprecation needs types (of at least object)
   function arrayIncludesObj(array, obj) {
-    return array.some((item) => assert.deepEqual(item, obj));
+    return array.some((item) => assert.deepInclude(item, obj));
   }
 
   test('POST should create the correct issue if every field is set', (done) => {
@@ -186,6 +188,7 @@ suite('Functional Tests', function() {
         assert.equal(res.status, 200);
         assert.equal(res.type, 'application/json');
         assert.deepEqual(res.body, { result: 'successfully deleted', '_id': _id })
+        done();
       });
   });
 
