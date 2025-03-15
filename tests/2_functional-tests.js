@@ -79,7 +79,8 @@ suite('Functional Tests', function() {
       .end((_err, res) => {
         assert.equal(res.status, 200);
         assert.equal(res.type, 'application/json');
-        // TODO: Implement correct assertion
+        assert.deepInclude(res.body[0], testFull);
+        assert.deepInclude(res.body[1], testRequired);
         done();
       });
   });
@@ -90,7 +91,7 @@ suite('Functional Tests', function() {
       .end((_err, res) => {
         assert.equal(res.status, 200);
         assert.equal(res.type, 'application/json');
-        // TODO: Implement correct assertion
+        assert.deepInclude(res.body[0], testFull);
         done();
       });
 
@@ -102,7 +103,7 @@ suite('Functional Tests', function() {
       .end((_err, res) => {
         assert.equal(res.status, 200);
         assert.equal(res.type, 'application/json');
-        // TODO: Implement correct assertion
+        assert.deepInclude(res.body[1], testRequired);
         done();
       });
 
@@ -213,6 +214,12 @@ suite('Functional Tests', function() {
         assert.deepEqual(res.body, { error: 'missing _id' });
         done();
       });
+  });
+
+  after(async () => {
+    await chai.request(server)
+      .delete('/api/issues/test')
+      .send({ _id: testIdFull });
   });
 
 });

@@ -7,9 +7,7 @@ async function findProject(projectName) {
 
     return project?._id;
   } catch (error) {
-    // TODO: More secure error handling -> use Mongoose errors
-    console.error(error);
-    throw new Error('Failed to find project');
+    throw new Error('Unexpected error searching for project');
   }
 
 }
@@ -23,9 +21,7 @@ async function createProject(projectName) {
     const project = await newProject.save();
     return project._id;
   } catch (error) {
-    // TODO: More secure error handling -> use Mongoose errors
-    console.error(error);
-    throw new Error('Failed to create project');
+    throw new Error('Unexpected error creating project');
   }
 }
 
@@ -46,13 +42,18 @@ async function getAllIssues(project, filterOptions) {
   // TODO: Process/validate filter options
 
   try {
-    const issues = await IssueModel.find({ project: projectId, ...filterOptions });
-    // TODO: Only return necessary fields
+    const issues = await IssueModel.find(
+      { project: projectId, ...filterOptions },
+      '_id issue_title issue_text created_on updated_on created_by assigned_to open status_text'
+    );
+    console.log(issues);
     return issues;
   } catch (error) {
-    // TODO: More secure error handling -> use Mongoose errors
+    if (error instanceof mongoose.Error.DocumentNotFoundError) {
+      throw new Error('Failed to find issues');
+    }
     console.error(error);
-    throw new Error('Failed to find issues');
+    throw new Error('Unexpected error searching for issues');
   }
 }
 
@@ -63,8 +64,17 @@ async function createIssue(project, issue) {
   try {
     const saveableIssue = new IssueModel({ project: projectId, ...issue });
     const savedIssue = await saveableIssue.save();
-    // TODO: Only return necessary fields
-    return savedIssue;
+    return {
+      _id: savedIssue._id,
+      issue_title: savedIssue.issue_title,
+      issue_text: savedIssue.issue_text,
+      created_on: savedIssue.created_on,
+      updated_on: savedIssue.updated_on,
+      created_by: savedIssue.created_by,
+      assigned_to: savedIssue.assigned_to,
+      open: savedIssue.open,
+      status_text: savedIssue.status_text
+    };
   } catch (error) {
     if (error instanceof mongoose.Error.ValidationError) {
       throw new Error('required field(s) missing');
