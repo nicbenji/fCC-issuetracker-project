@@ -60,8 +60,6 @@ async function createIssue(project, issue) {
 
   const projectId = await findOrInsertProject(project);
 
-  // TODO: Validate issue
-
   try {
     const saveableIssue = new IssueModel({ project: projectId, ...issue });
     const savedIssue = await saveableIssue.save();
@@ -78,28 +76,35 @@ async function createIssue(project, issue) {
 // NOTE: Maybe checking if issue belongs to project necessary
 async function updateIssueById(id, updateOptions) {
 
-  // TODO: Validate id and update shite
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new Error('could not delete');
+  }
+
+  const { _id: _, ...newUpdateOptions } = updateOptions;
+  console.log(newUpdateOptions);
+  if (Object.keys(newUpdateOptions).length === 0) {
+    throw new Error('no update field(s) sent');
+  }
 
   try {
-    await IssueModel.findByIdAndUpdate(id, updateOptions, { new: true });
+    await IssueModel.findByIdAndUpdate(id, newUpdateOptions);
   } catch (error) {
     // TODO: More secure error handling -> use Mongoose errors
-    console.error(error);
-    throw new Error('Failed to update issue');
+    throw new Error('Unexpected failure updating issue');
   }
 }
 
 // NOTE: Maybe checking if issue belongs to project necessary
 async function deleteIssueById(id) {
 
-  // TODO: Validate id
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new Error('could not delete');
+  }
 
   try {
     await IssueModel.findByIdAndDelete(id);
   } catch (error) {
-    // TODO: More secure error handling -> use Mongoose errors
-    console.error(error);
-    throw new Error('Failed to delete issue');
+    throw new Error('Unexpected failure deleting issue');
   }
 }
 

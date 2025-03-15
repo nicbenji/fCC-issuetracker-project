@@ -42,8 +42,7 @@ module.exports = function(app) {
         await updateIssueById(id, updateFields);
         return res.json({ result: 'successfully updated', '_id': id })
       } catch (error) {
-        // TODO: Error handling
-        return res.json({ error: 'could not update', '_id': _id });
+        return res.json({ error: error.message, '_id': id });
       }
     })
 
@@ -58,8 +57,7 @@ module.exports = function(app) {
         await deleteIssueById(id);
         return res.json({ result: 'successfully deleted', '_id': id })
       } catch (error) {
-        // TODO: Error handling
-        return res.json({ error: 'could not delete', '_id': _id });
+        return res.json({ error: error.message, '_id': id });
       }
     });
 
