@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const { ProjectModel, IssueModel } = require('../models/issue.js');
 
 async function findProject(projectName) {
@@ -67,9 +68,10 @@ async function createIssue(project, issue) {
     // TODO: Only return necessary fields
     return savedIssue;
   } catch (error) {
-    // TODO: More secure error handling -> use Mongoose errors
-    console.error(error);
-    throw new Error('Failed to create issue');
+    if (error instanceof mongoose.Error.ValidationError) {
+      throw new Error('required field(s) missing');
+    }
+    throw new Error('Unexpected error creating issue');
   }
 }
 
