@@ -87,7 +87,7 @@ suite('Functional Tests', function() {
 
   test('GET should return all issues that fulfill one filter criteria', (done) => {
     chai.request(server)
-      .get("/api/issues/test?assigned_to='TestUser'")
+      .get("/api/issues/test?assigned_to=TestUser")
       .end((_err, res) => {
         assert.equal(res.status, 200);
         assert.equal(res.type, 'application/json');
@@ -99,11 +99,11 @@ suite('Functional Tests', function() {
 
   test('GET should return all issues that fulfill all filter criteria', (done) => {
     chai.request(server)
-      .get("/api/issues/test?created_by='TestUser'&issue_title='testRequired'")
+      .get("/api/issues/test?created_by=TestUser&issue_title=testRequired")
       .end((_err, res) => {
         assert.equal(res.status, 200);
         assert.equal(res.type, 'application/json');
-        assert.deepInclude(res.body[1], testRequired);
+        assert.deepInclude(res.body[0], testRequired);
         done();
       });
 

@@ -36,7 +36,10 @@ const issueSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  assigned_to: String,
+  assigned_to: {
+    type: String,
+    default: ''
+  },
   open: {
     type: Boolean,
     default: true

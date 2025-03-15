@@ -9,11 +9,9 @@ async function findProject(projectName) {
   } catch (error) {
     throw new Error('Unexpected error searching for project');
   }
-
 }
 
 async function createProject(projectName) {
-
   try {
     const newProject = new ProjectModel({
       name: projectName
@@ -39,20 +37,16 @@ async function getAllIssues(project, filterOptions) {
 
   const projectId = await findOrInsertProject(project);
 
-  // TODO: Process/validate filter options
-
   try {
     const issues = await IssueModel.find(
       { project: projectId, ...filterOptions },
       '_id issue_title issue_text created_on updated_on created_by assigned_to open status_text'
     );
-    console.log(issues);
     return issues;
   } catch (error) {
     if (error instanceof mongoose.Error.DocumentNotFoundError) {
       throw new Error('Failed to find issues');
     }
-    console.error(error);
     throw new Error('Unexpected error searching for issues');
   }
 }

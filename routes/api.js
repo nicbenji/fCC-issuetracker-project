@@ -13,7 +13,7 @@ module.exports = function(app) {
         const issues = await getAllIssues(project, filters);
         return res.json(issues);
       } catch (error) {
-        // TODO: Error handling
+        return res.json({ error: error.message });
       }
 
     })
