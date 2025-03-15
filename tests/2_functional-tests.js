@@ -205,7 +205,7 @@ suite('Functional Tests', function() {
       .end((_err, res) => {
         assert.equal(res.status, 200);
         assert.equal(res.type, 'application/json');
-        assert.deepEqual(res.body, { error: 'could not update', '_id': _id });
+        assert.deepEqual(res.body, { error: 'could not delete', '_id': _id });
         done();
       });
   });

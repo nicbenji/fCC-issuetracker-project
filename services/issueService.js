@@ -77,7 +77,7 @@ async function createIssue(project, issue) {
 async function updateIssueById(id, updateOptions) {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new Error('could not delete');
+    throw new Error('could not update');
   }
 
   const { _id: _, ...newUpdateOptions } = updateOptions;
