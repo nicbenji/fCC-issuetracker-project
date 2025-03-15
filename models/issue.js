@@ -46,7 +46,7 @@ const issueSchema = new mongoose.Schema({
   },
   status_text: {
     type: String,
-    default: 'New'
+    default: ''
   }
 });
 
