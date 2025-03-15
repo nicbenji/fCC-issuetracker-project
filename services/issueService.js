@@ -80,14 +80,12 @@ async function updateIssueById(id, updateOptions) {
     throw new Error('could not update');
   }
 
-  const { _id: _, ...newUpdateOptions } = updateOptions;
-  console.log(newUpdateOptions);
-  if (Object.keys(newUpdateOptions).length === 0) {
+  if (Object.keys(updateOptions).length <= 1) {
     throw new Error('no update field(s) sent');
   }
 
   try {
-    await IssueModel.findByIdAndUpdate(id, newUpdateOptions);
+    await IssueModel.findByIdAndUpdate(id, updateOptions);
   } catch (error) {
     // TODO: More secure error handling -> use Mongoose errors
     throw new Error('Unexpected failure updating issue');
