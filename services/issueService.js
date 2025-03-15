@@ -87,7 +87,6 @@ async function updateIssueById(id, updateOptions) {
   try {
     await IssueModel.findByIdAndUpdate(id, updateOptions);
   } catch (error) {
-    // TODO: More secure error handling -> use Mongoose errors
     throw new Error('Unexpected failure updating issue');
   }
 }
