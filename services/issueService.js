@@ -80,8 +80,6 @@ async function createIssue(project, issue) {
 // NOTE: Maybe checking if issue belongs to project necessary
 async function updateIssueById(id, updateOptions) {
 
-  console.log(id, updateOptions);
-
   if (!id) {
     throw new Error('missing _id');
   }
@@ -93,7 +91,10 @@ async function updateIssueById(id, updateOptions) {
   }
 
   try {
-    const result = await IssueModel.findByIdAndUpdate(id, updateOptions);
+    const result = await IssueModel.findByIdAndUpdate(
+      id,
+      { ...updateOptions, updated_on: Date.now() }
+    );
     if (!result) {
       throw new mongoose.Error.DocumentNotFoundError();
     }
@@ -104,8 +105,6 @@ async function updateIssueById(id, updateOptions) {
 
 // NOTE: Maybe checking if issue belongs to project necessary
 async function deleteIssueById(id) {
-
-  console.log(id);
 
   if (!id) {
     throw new Error('missing _id');
