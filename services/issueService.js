@@ -80,32 +80,47 @@ async function createIssue(project, issue) {
 // NOTE: Maybe checking if issue belongs to project necessary
 async function updateIssueById(id, updateOptions) {
 
+  console.log(id, updateOptions);
+
+  if (!id) {
+    throw new Error('missing _id');
+  }
+  if (Object.keys(updateOptions).length === 1) {
+    throw new Error('no update field(s) sent');
+  }
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new Error('could not update');
   }
 
-  if (Object.keys(updateOptions).length <= 1) {
-    throw new Error('no update field(s) sent');
-  }
-
   try {
-    await IssueModel.findByIdAndUpdate(id, updateOptions);
+    const result = await IssueModel.findByIdAndUpdate(id, updateOptions);
+    if (!result) {
+      throw new mongoose.Error.DocumentNotFoundError();
+    }
   } catch (error) {
-    throw new Error('Unexpected failure updating issue');
+    throw new Error('could not update');
   }
 }
 
 // NOTE: Maybe checking if issue belongs to project necessary
 async function deleteIssueById(id) {
 
+  console.log(id);
+
+  if (!id) {
+    throw new Error('missing _id');
+  }
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new Error('could not delete');
   }
 
   try {
-    await IssueModel.findByIdAndDelete(id);
+    const result = await IssueModel.findByIdAndDelete(id);
+    if (!result) {
+      throw new mongoose.Error.DocumentNotFoundError();
+    }
   } catch (error) {
-    throw new Error('Unexpected failure deleting issue');
+    throw new Error('could not delete');
   }
 }
 

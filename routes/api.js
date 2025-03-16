@@ -34,10 +34,6 @@ module.exports = function(app) {
       const updateFields = req.body;
       const id = updateFields._id;
 
-      if (!id) {
-        return res.json({ error: 'missing _id' });
-      }
-
       try {
         await updateIssueById(id, updateFields);
         return res.json({ result: 'successfully updated', '_id': id })
@@ -48,10 +44,6 @@ module.exports = function(app) {
 
     .delete(async function(req, res) {
       const id = req.body._id;
-
-      if (!id) {
-        return res.json({ error: 'missing _id' });
-      }
 
       try {
         await deleteIssueById(id);
