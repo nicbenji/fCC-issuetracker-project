@@ -11,7 +11,6 @@ suite('Functional Tests', function() {
 
   const testIdFull = new ObjectId().toString();
   const testIdRequired = new ObjectId().toString();
-  console.log(testIdFull, testIdRequired);
 
   const testFull = {
     _id: testIdFull,
